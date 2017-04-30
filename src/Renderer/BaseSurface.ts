@@ -11,15 +11,18 @@ import {Shell} from "ikagaka-shell-loader/lib/Model/Shell";
 import {SurfaceDefinition} from "ikagaka-shell-loader/lib/Model/SurfaceDefinitionTree";
 import {Renderer} from "./Renderer";
 
+/**
+ * elementを合成して baseSurface を構成します。
+ */
+export class SurfaceBaseRenderer {
 
-export class SurfaceBaseRenderer extends Renderer {
-  
+  rndr: Renderer;
   cache: CanvasCache;     // 色抜きキャッシュ
   bases: Canvas[]; // 合成後のベースサーフェス
   shell: Shell;
 
   constructor(shell: Shell){
-    super();
+    this.rndr = new Renderer();
     this.bases = [];
     this.shell = shell;
     this.cache = new CanvasCache(shell.directory);
@@ -73,9 +76,9 @@ export class SurfaceBaseRenderer extends Renderer {
       })
     ).then((elms)=>{
       const _elms = <{file: string, type: string, x: number, y: number, canvas: Canvas }[]>elms.filter((a)=> a != null);
-      this.composeElements(_elms);
+      this.rndr.composeElements(_elms);
       // キャッシング
-      bases[n] = new Canvas(Util.copy(this.cnv));
+      bases[n] = new Canvas(Util.copy(this.rndr.cnv));
       return bases[n];
     });
   }

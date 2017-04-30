@@ -34,12 +34,13 @@ export class SurfacePatternRenderer {
     const {base, foregrounds, backgrounds} = renderingTree;
     const {enableRegion} = shell.config;
     const {collisions, animations} = surfaceNode;
+    // まず ベースサーフェスの大きさを知りたいので element 合成してベースサーフェスを作成
     return this.baseRndr.getBaseSurface(base).then((baseSrfCnv)=>{
-      // この baseSrfCnv は cache そのものなのでいじるわけにはいかないのでコピーする
+      // ベースサーフェスを書き込む
       this.offscreen.init(baseSrfCnv);
-      this.offscreen.clear(); // 短形を保ったまま消去
-      // この this な srfCnv がreduceの単位元になる
-      return this.convoluteTree(new SurfaceRenderingLayer("overlay", renderingTree, 0, 0)); // 透明な base へ overlay する
+      this.offscreen.clear(); // 短形を保ったまま消去。大きさだけ得られた。
+      const layertree = new SurfaceRenderingLayer("overlay", renderingTree, 0, 0)
+      return this.convoluteTree(layertree); // 透明な offscreen へ overlay する
     }).then(()=>{
       // 当たり判定を描画
       if (enableRegion) {
@@ -76,15 +77,18 @@ export class SurfacePatternRenderer {
           prm.then(()=>
             this.convoluteTree(layer)
           ), prm) , Promise.resolve());
-    return process(backgrounds).then(()=>
+    // 背景を描画
+    return process(backgrounds).then(()=> 
+      // ベースサーフェスを取得
       this.baseRndr.getBaseSurface(base).then((baseSrfCnv)=>{
-        // backgrounds の上に base を描画
-        // いろいろやっていても実際描画するのは それぞれのベースサーフェスだけです
         // a.add(Util.copy(this.rndr.srfCnv.cnv), "current");
         // a.add(Util.copy(baseSrfCnv.cnv), "base");
+        // backgrounds の上に base を描画
+        // いろいろやっていても実際描画するのは それぞれのベースサーフェスだけです
         this.offscreen.composeElement(baseSrfCnv, type, x, y);
         // a.add(Util.copy(this.rndr.srfCnv.cnv), "result");
-      }).catch(console.warn.bind(console)) // 失敗してもログ出して解決
+      }).catch(console.warn.bind(console)) // 失敗してもログ出して無視
+    // 全面を描画
     ).then(()=> process(foregrounds) );
   }
 }

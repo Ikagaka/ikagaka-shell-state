@@ -2,7 +2,11 @@ import { CanvasCache } from "./Cache";
 import { Canvas } from "./Canvas";
 import { Shell } from "ikagaka-shell-loader/lib/Model/Shell";
 import { Renderer } from "./Renderer";
-export declare class SurfaceBaseRenderer extends Renderer {
+/**
+ * elementを合成して baseSurface を構成します。
+ */
+export declare class SurfaceBaseRenderer {
+    rndr: Renderer;
     cache: CanvasCache;
     bases: Canvas[];
     shell: Shell;

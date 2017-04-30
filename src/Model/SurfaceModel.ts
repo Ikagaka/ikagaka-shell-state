@@ -43,9 +43,13 @@ import {SurfaceCollision} from "ikagaka-shell-loader/src/Model/SurfaceDefinition
  * 現在のサーフェスのレイヤ状態を一意に表すレンダリングツリー
  */
 export class SurfaceRenderingTree { 
-  readonly base:        number;
+  /** ベースサーフェスの Id */
+  readonly base: number;
+  /** ベースサーフェスの前にくるレイヤ */
   foregrounds: SurfaceRenderingLayerSet[];
+  /** ベースサーフェスの後ろにくるレイヤ */
   backgrounds: SurfaceRenderingLayerSet[];
+  /** 当たり判定領域 */
   collisions:  SurfaceCollision[];
   constructor(surface: number){
     this.base = surface;
@@ -58,7 +62,8 @@ export class SurfaceRenderingTree {
 export type SurfaceRenderingLayerSet = SurfaceRenderingLayer[];
 
 export class SurfaceRenderingLayer {
-  readonly type: string;
+  /** 対応すべき描画メソッドは以上ですが、surface.txt作者のtypoにより未知の描画メソッドが渡されることがあるかもしれません */
+  readonly type: "base"|"overlay"|"overlayfast"|"replace"|"interpolate"|"reduce"|string;
   readonly surface: SurfaceRenderingTree;
   readonly x: number;
   readonly y: number;
