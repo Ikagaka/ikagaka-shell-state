@@ -6,7 +6,7 @@
 async function main (){
   const dir = await NarLoader.loadFromURL("/nar/mobilemaster.nar");
   const dic = await cvt(dir.getDirectory("shell/master").asArrayBuffer());
-  const shell = await load(dic);
+  const shell = await ShellLoader.load(dic); // https://github.com/Ikagaka/ikagaka-shell-loader
   const shellState = new ShellState(shell);
   const scopeId = 0;
   const surfaceId = 0;
@@ -87,7 +87,7 @@ export declare class SurfaceState {
 async function main (){
   const dir = await NarLoader.loadFromURL("/nar/mobilemaster.nar");
   const dic = await cvt(dir.getDirectory("shell/master").asArrayBuffer());
-  const shell = await load(dic);
+  const shell = await ShellLoader.load(dic); // https://github.com/Ikagaka/ikagaka-shell-loader
   const shellState = new ShellState(shell);
 
   // シェルディレクトリの静的な情報を元にデータを読み込み
