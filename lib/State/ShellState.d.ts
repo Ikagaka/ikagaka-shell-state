@@ -9,7 +9,7 @@ export declare class ShellState extends EventEmitter {
     config: Config;
     constructor(shell: Shell);
     destructor(): void;
-    createSurfaceState(scopeId: number, surfaceId: number, rndr: (tree: SurfaceRenderingTree) => Promise<void>): SurfaceState;
+    createSurfaceState(scopeId: number, surfaceId: number, rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree) => Promise<void>): SurfaceState;
     showRegion(): void;
     hideRegion(): void;
     bind(category: string, parts: string): void;
@@ -17,4 +17,3 @@ export declare class ShellState extends EventEmitter {
     unbind(category: string, parts: string): void;
     unbind(scopeId: number, bindgroupId: number): void;
 }
-export declare function bind_value(config: Config, a: number | string, b: number | string, flag: boolean): void;

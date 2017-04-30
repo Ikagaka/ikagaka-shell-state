@@ -16,12 +16,12 @@ export class SurfaceState extends EventEmitter  {
   readonly config: Config;
   readonly surfaceNode: SurfaceDefinition;
   debug: boolean;
-  readonly rndr: (tree: SurfaceRenderingTree)=> Promise<void>;  // 実 DOM へ書き込んじゃうなにか
+  readonly rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree)=> Promise<void>;  // 実 DOM へ書き込んじゃうなにか
   readonly continuations: {[animId: number]: {resolve:Function, reject:Function}};
   // アニメーション終了時に呼び出す手はずになっているプロミス値への継続
   // 本来は surface モデルに入れるべきだがクロージャを表現できないので
 
-  constructor(surface: SurfaceModel, shell: Shell, rndr: (tree: SurfaceRenderingTree)=> Promise<void>) {
+  constructor(surface: SurfaceModel, shell: Shell, rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree)=> Promise<void>) {
     super();
     this.surface = surface;
     this.shell = shell
@@ -51,7 +51,7 @@ export class SurfaceState extends EventEmitter  {
     this.constructRenderingTree();
     // 実 DOM の canvas へ反映
     if(this.rndr instanceof Function){
-      return this.rndr(this.surface.renderingTree).then(()=>{
+      return this.rndr(scopeId, surfaceId, this.surface.renderingTree).then(()=>{
         this.debug && console.timeEnd("render("+scopeId+","+surfaceId+")");
       });
     }else{

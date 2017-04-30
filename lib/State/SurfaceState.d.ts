@@ -2,7 +2,7 @@
 import { Shell } from "ikagaka-shell-loader/lib/Model/Shell";
 import { Config } from "ikagaka-shell-loader/lib/Model/Config";
 import { SurfaceDefinition } from "ikagaka-shell-loader/lib/Model/SurfaceDefinitionTree";
-import { SurfaceModel, Seriko, SurfaceRenderingTree } from "../Model/SurfaceModel";
+import { SurfaceModel, SurfaceRenderingTree } from "../Model/SurfaceModel";
 import { EventEmitter } from "events";
 export declare class SurfaceState extends EventEmitter {
     readonly surface: SurfaceModel;
@@ -10,14 +10,14 @@ export declare class SurfaceState extends EventEmitter {
     readonly config: Config;
     readonly surfaceNode: SurfaceDefinition;
     debug: boolean;
-    readonly rndr: (tree: SurfaceRenderingTree) => Promise<void>;
+    readonly rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree) => Promise<void>;
     readonly continuations: {
         [animId: number]: {
             resolve: Function;
             reject: Function;
         };
     };
-    constructor(surface: SurfaceModel, shell: Shell, rndr: (tree: SurfaceRenderingTree) => Promise<void>);
+    constructor(surface: SurfaceModel, shell: Shell, rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree) => Promise<void>);
     destructor(): void;
     render(): Promise<void>;
     private initSeriko(animId);
@@ -35,6 +35,3 @@ export declare class SurfaceState extends EventEmitter {
     yenE(): Promise<void>;
     constructRenderingTree(): void;
 }
-export declare function layersToTree(surfaces: SurfaceDefinition[], scopeId: number, n: number, serikos: {
-    [a: number]: Seriko;
-}, config: Config): SurfaceRenderingTree;

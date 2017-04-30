@@ -163,7 +163,7 @@ QUnit.test('Renderer', async (assert)=>{
   
   rndr.offscreen.debug = true;
   // surface model を生成
-  const srfState = shellState.createSurfaceState(scopeId, surfaceId, (tree)=>{ rndr.render(surfaceId, tree); return Promise.resolve(); });
+  const srfState = shellState.createSurfaceState(scopeId, surfaceId, (_, surfaceId, tree)=>{ rndr.render(surfaceId, tree); return Promise.resolve(); });
 
   srfState.debug = true;
   

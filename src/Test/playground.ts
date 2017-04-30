@@ -110,7 +110,7 @@ let changeSurface = async function(baseCache: Renderer.SurfaceBaseRenderer, shel
   rndr.attachCanvas(new Renderer.Canvas(cnv));
   $("#cnv_placeholder").empty().append(cnv);
 
-  const srfState = shellState.createSurfaceState(scopeId, surfaceId, (tree)=> rndr.render(surfaceId, tree).then(()=>{}) );
+  const srfState = shellState.createSurfaceState(scopeId, surfaceId, (_, surfaceId, tree)=> rndr.render(surfaceId, tree).then(()=>{}) );
   srfState.debug = true;
   srfState.render();
 

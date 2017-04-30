@@ -21,7 +21,7 @@ export class ShellState extends EventEmitter {
     this.removeAllListeners("render");
   }
 
-  createSurfaceState(scopeId: number, surfaceId: number, rndr: (tree: SurfaceRenderingTree)=> Promise<void>): SurfaceState {
+  createSurfaceState(scopeId: number, surfaceId: number, rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree)=> Promise<void>): SurfaceState {
     const state = new SurfaceState(new SurfaceModel(scopeId, surfaceId), this.shell, rndr);
     const render = ()=> state.render();
     this.on("render", render);
