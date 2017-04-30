@@ -1,0 +1,21 @@
+<style media="screen">
+  #wrapper {
+    position: fixed;
+    bottom: 0px;
+    left: 300px;
+  }
+  canvas,img{border:1px solid black;}
+</style>
+<div id="wrapper"><div id="surface"></div></div>
+<fieldset>
+<legend id="version">surface test</legend>
+<p><label>nar: <input type="file" id="nar" /></label></p>
+<p><label>shell: <select name="shellId" id="shellId"></select></label></p>
+<p><label>scope: <input type="number" name="scopeId" id="scopeId" value="0" /></label></p>
+<p><label>surface: <select name="surfaceId" id="surfaceId"></select></label></p>
+<p><label>animation: <select name="animationId" id="animationId"></select></label></p>
+<p>bindgroup: <ol id="bindgroupId" start="0"/></ol></p>
+<p>collision: <input type="checkbox" id="collisionDraw" /></p>
+</fieldset>
+<div id="cnv_placeholder"></div>
+<script src="dist/playground.js"></script>

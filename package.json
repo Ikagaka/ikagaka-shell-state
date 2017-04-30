@@ -1,0 +1,68 @@
+{
+  "name": "ikagaka-shell-state",
+  "version": "5.0.0",
+  "description": "Ukagaka Shell State Machine",
+  "license": "MIT",
+  "url": "https://github.com/ikagaka/ikagaka-shell-state.js",
+  "keywords": [
+    "nar",
+    "ikagaka",
+    "ukagaka"
+  ],
+  "scripts": {
+    "setup": "npm install -g http-server",
+    "init": "npm run update; npm run mkdir; npm run build",
+    "update": "npm run reset; npm update",
+    "reset": "rm -rf node_modules 2>/dev/null",
+    "mkdir": "mkdir dist lib 2>/dev/null",
+    "clean": "rm -rf dist/* lib/* 2>/dev/null",
+    "build": "npm run clean; tsc -p .;                 browserify lib/index.js      --standalone ShellState -o dist/ikagaka-shell-state.js",
+    "test": "npm run clean; tsc -p .; npm run espower; browserify lib/Test/index.js --standalone Test  -o dist/test.js",
+    "play": "npm run clean; tsc -p .;                  browserify lib/Test/playground.js --standalone Play  -o dist/playground.js",
+    "espower": "for file in `find lib/Test -name *.js`; do espower $file > $file.tmp; mv -f $file.tmp $file; done",
+    "check": "tsc -w --noEmit -p ./",
+    "lint": "tslint -c ./tslint.json --project ./tsconfig.json --type-check",
+    "doc": "typedoc --mode modules --out doc --disableOutputCheck"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ikagaka/ikagaka/ikagaka-shell-state.js.git"
+  },
+  "dependencies": {
+    "@types/deep-diff": "0.0.30",
+    "deep-diff": "^0.3.6",
+    "ikagaka-shell-loader": "github:ikagaka/ikagaka-shell-loader"
+  },
+  "devDependencies": {
+    "jquery": "^3.2.1",
+    "@types/node": "0.0.3",
+    "@types/power-assert-formatter": "^1.4.28",
+    "@types/qunit": "^2.0.31",
+    "browserify": "^13.1.0",
+    "empower": "^1.2.1",
+    "espower-cli": "^1.1.0",
+    "narloader": "github:ikagaka/NarLoader#jszip3",
+    "typescript": "^2.0.0",
+    "typedoc": "^0.5.3",
+    "tslint": "^3.13.0-dev.0",
+    "power-assert": "^1.4.1",
+    "power-assert-formatter": "^1.4.1",
+    "qunit-tap": "^1.5.1",
+    "qunitjs": "^2.0.1"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/Ikagaka/ikagaka-shell-state/issues"
+  },
+  "typings": "./lib/index.d.ts",
+  "main": "./lib/index.js",
+  "author": "Ikagaka",
+  "contributors": [
+    "legokichi",
+    "narazaka"
+  ]
+}
