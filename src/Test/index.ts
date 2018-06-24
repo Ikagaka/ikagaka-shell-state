@@ -1,8 +1,9 @@
 import $ = require("jquery");
 import * as SU from "../Util/";
-import {NarLoader} from "narloader";
+import * as NarLoader from "narloader";
 import {load} from "ikagaka-shell-loader/lib/";
 import * as SHS from "../State/ShellState";
+import { NanikaContainerSyncDirectory } from "nanika-storage";
 
 
 import QUnit = require('qunitjs');
@@ -14,8 +15,8 @@ empower(QUnit.assert, formatter(), { destructive: true });
 qunitTap(QUnit, function() { console.log.apply(console, arguments); }, {showSourceOnFailure: false});
 
 
-function cvt(a: {[a:string]: ArrayBuffer}): {[a:string]: ()=> Promise<ArrayBuffer>} {
-  return Object.keys(a).reduce((o,key)=> (o[key] = ()=> Promise.resolve(a[key]), o), {});
+function cvt(a: NanikaContainerSyncDirectory): {[a:string]: ()=> Promise<ArrayBuffer>} {
+  return a.childrenAllSync().reduce((o,file)=> (o[a.relative(file.path).path] = ()=> Promise.resolve(file.readFileSync().buffer), o), {});
 }
 
 
@@ -60,7 +61,7 @@ QUnit.test("SurfaceUtil.random, SurfaceUtil.periodic SurfaceUtil.always (wait 10
       let func = (next:Function)=>{
         if(endtime < Date.now()){
           assert.ok(4 <= count && count <= 6, "random, 2");
-          return resolve()
+          return resolve();
         }
         count++;
         next();
@@ -68,7 +69,7 @@ QUnit.test("SurfaceUtil.random, SurfaceUtil.periodic SurfaceUtil.always (wait 10
       SU.random(func, 2);
     }),
     new Promise((resolve, reject)=>{
-      let count = 0
+      let count = 0;
       let func = (next:Function)=>{
         if(endtime < Date.now()){
           assert.ok(4 <= count && count <= 6, "periodic");
@@ -76,7 +77,7 @@ QUnit.test("SurfaceUtil.random, SurfaceUtil.periodic SurfaceUtil.always (wait 10
         }
         count++;
         next();
-      }
+      };
       SU.periodic(func, 2);
     }),
     new Promise((resolve, reject)=>{
@@ -88,8 +89,8 @@ QUnit.test("SurfaceUtil.random, SurfaceUtil.periodic SurfaceUtil.always (wait 10
         }
         count++;
         setTimeout(next, 1000);
-      }
-      SU.always(func)
+      };
+      SU.always(func);
     })
   ]).then(done);
 });
@@ -111,8 +112,8 @@ QUnit.test("SurfaceUtil.randomRange", (assert)=>{
 QUnit.module('Shell.SurfaceState');
 
 QUnit.test('SR.SurfaceState', async (assert)=>{
-  const dir = await NarLoader.loadFromURL("/nar/mobilemaster.nar");
-  const dic = await cvt(dir.getDirectory("shell/master").asArrayBuffer());
+  const dir = await NarLoader.loadFromURI("/nar/mobilemaster.nar");
+  const dic = await cvt(dir.new("shell/master") as NanikaContainerSyncDirectory);
   const shell = await load(dic);
   console.log(shell);
   // 当たり判定表示
@@ -123,7 +124,7 @@ QUnit.test('SR.SurfaceState', async (assert)=>{
   const surfaceId = 0;
   const srfState = shellState.createSurfaceState(scopeId, surfaceId, (tree)=>{ console.info(tree); return Promise.resolve(); });
   srfState.debug = true;
-  
+
   console.log(srfState);
 
   // 初回描画
@@ -139,8 +140,8 @@ import {SurfaceBaseRenderer, SurfacePatternRenderer, Canvas, Util} from "../Rend
 
 QUnit.test('Renderer', async (assert)=>{
   setCanvasStyle();
-  const dir = await NarLoader.loadFromURL("/nar/mobilemaster.nar");
-  const dic = await cvt(dir.getDirectory("shell/master").asArrayBuffer());
+  const dir = await NarLoader.loadFromURI("/nar/mobilemaster.nar");
+  const dic = await cvt(dir.new("shell/master") as NanikaContainerSyncDirectory);
   const shell = await load(dic);
   console.log(shell);
   // 当たり判定表示
@@ -160,13 +161,13 @@ QUnit.test('Renderer', async (assert)=>{
   // レンダラに実 DOM canvas を attach
   const rndr = new SurfacePatternRenderer(baseCache);
   rndr.attachCanvas(new Canvas(realCanvas));
-  
+
   rndr.offscreen.debug = true;
   // surface model を生成
   const srfState = shellState.createSurfaceState(scopeId, surfaceId, (_, surfaceId, tree)=>{ rndr.render(surfaceId, tree); return Promise.resolve(); });
 
   srfState.debug = true;
-  
+
   console.log(srfState);
 
   // 初回描画

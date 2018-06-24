@@ -41,7 +41,7 @@
     "empower": "^1.2.1",
     "espower-cli": "^1.1.0",
     "jquery": "^3.2.1",
-    "narloader": "github:ikagaka/NarLoader#jszip3",
+    "narloader": "^2.0.2",
     "power-assert": "^1.4.1",
     "power-assert-formatter": "^1.4.1",
     "qunit-tap": "^1.5.1",

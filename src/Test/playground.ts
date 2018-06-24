@@ -1,10 +1,11 @@
 import $ = require("jquery");
-import Nar, {NarLoader} from "narloader";
+import * as NarLoader from "narloader";
 import * as ShellLoader from "ikagaka-shell-loader/lib/";
 import * as ShellState from "../";
 import * as Renderer from "../Renderer/";
-function cvt(a: {[a:string]: ArrayBuffer}): {[a:string]: ()=> Promise<ArrayBuffer>} {
-  return Object.keys(a).reduce((o,key)=> (o[key] = ()=> Promise.resolve(a[key]), o), {});
+import { NanikaContainerSyncDirectory } from "nanika-storage";
+function cvt(a: NanikaContainerSyncDirectory): {[a:string]: ()=> Promise<ArrayBuffer>} {
+  return a.childrenAllSync().reduce((o,file)=> (o[a.relative(file.path).path] = ()=> Promise.resolve(file.readFileSync().buffer), o), {});
 }
 window["$"] = $;
 
@@ -14,16 +15,16 @@ async function main(){
   $("#version")
     .append("(ShellLoader@"+ShellLoader.version+")")
     .append("(ShellState@"+ShellState.version+")");
-  NarLoader.loadFromURL("../nar/mobilemaster.nar").then(changeNar);
+  NarLoader.loadFromURI("../nar/mobilemaster.nar").then(changeNar);
   $("#nar").change(function(ev){
-    NarLoader.loadFromBlob($(this).prop("files")[0]).then(changeNar);
+    NarLoader.loadFromBuffer($(this).prop("files")[0]).then(changeNar);
   });
 }
 
-function changeNar(nanikaDir: Nar.NanikaDirectory){
-  console.log(nanikaDir.files);
+function changeNar(nanikaDir: NanikaContainerSyncDirectory){
+  console.log(nanikaDir.childrenAllSync().map(c => c.path));
 
-  const shelllist = nanikaDir.getDirectory("shell").listChildren();
+  const shelllist = (nanikaDir.new("shell") as NanikaContainerSyncDirectory).childrenSync().map(c => c.basename().path);
   const $frag = $(document.createDocumentFragment());
   shelllist.forEach((shellId)=>{
     $("<option />").val(shellId).text(shellId).appendTo($frag);
@@ -37,8 +38,8 @@ function changeNar(nanikaDir: Nar.NanikaDirectory){
   }
 }
 
-async function changeShell(nanikaDir){
-  const shellDir = cvt(nanikaDir.getDirectory("shell/"+$("#shellId").val()).asArrayBuffer());
+async function changeShell(nanikaDir: NanikaContainerSyncDirectory){
+  const shellDir = cvt(nanikaDir.new("shell/"+$("#shellId").val()) as NanikaContainerSyncDirectory);
   const shell = await ShellLoader.load(shellDir);
   const baseCache = new Renderer.SurfaceBaseRenderer(shell);
   const shellState = new ShellState.ShellState(shell);
@@ -103,7 +104,7 @@ let changeSurface = async function(baseCache: Renderer.SurfaceBaseRenderer, shel
   const surfaceId = Number($("#surfaceId").val());
 
   console.log("scopeId:", scopeId, "surfaceId:", surfaceId);
-  
+
   const {width, height} = await baseCache.getBaseSurfaceSize(surfaceId);
   const rndr = new Renderer.SurfacePatternRenderer(baseCache);
   const cnv = Renderer.Util.createCanvas(width, height);
