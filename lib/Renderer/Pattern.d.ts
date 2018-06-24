@@ -9,5 +9,5 @@ export declare class SurfacePatternRenderer {
     constructor(baseRndr: SurfaceBaseRenderer, srfCnv?: Canvas);
     attachCanvas(srfCnv: Canvas): void;
     render(surfaceId: number, renderingTree: SurfaceRenderingTree): Promise<Canvas>;
-    private convoluteTree(layer);
+    private convoluteTree;
 }

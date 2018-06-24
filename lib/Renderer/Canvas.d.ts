@@ -1,3 +1,6 @@
+/**
+ * はみ出しを考慮したCanvas
+ */
 export declare class Canvas {
     cnv: HTMLCanvasElement;
     basePosX: number;
