@@ -20,14 +20,14 @@ export declare class SurfaceState extends EventEmitter {
     constructor(surface: SurfaceModel, shell: Shell, rndr: (scopeId: number, surfaceId: number, tree: SurfaceRenderingTree) => Promise<void>);
     destructor(): void;
     render(): Promise<void>;
-    private initSeriko(animId);
+    private initSeriko;
     updateBind(): Promise<void>;
     begin(animId: number): void;
     end(animId: number): void;
     endAll(): void;
-    private setIntervalTimer(animId, interval, args);
+    private setIntervalTimer;
     play(animId: number): Promise<void>;
-    private step(animId, seriko);
+    private step;
     stop(animId: number): void;
     pause(animId: number): void;
     resume(animId: number): void;
