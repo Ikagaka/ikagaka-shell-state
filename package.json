@@ -18,7 +18,7 @@
     "build": "npm run clean && tsc -p . &&                    browserify lib/index.js      --standalone ShellState -o dist/ikagaka-shell-state.js",
     "test": "npm run clean && tsc -p . && npm run espower && browserify lib/Test/index.js --standalone Test  -o dist/test.js",
     "play": "npm run clean && tsc -p . &&                    browserify lib/Test/playground.js --standalone Play  -o dist/playground.js",
-    "espower": "for file in `find lib/Test -name *.js`; do espower $file > $file.tmp; mv -f $file.tmp $file; done",
+    "espower": "node -e \"ep=require('espower-source');fs.readdirSync('lib/Test').forEach(f=>{p=path.join('lib/Test',f);r=ep(fs.readFileSync(p,'utf8'));fs.writeFileSync(p,r)})\"",
     "check": "tsc -w --noEmit -p ./",
     "lint": "tslint -c ./tslint.json --project ./tsconfig.json --type-check",
     "doc": "typedoc --mode modules --out doc --disableOutputCheck"
