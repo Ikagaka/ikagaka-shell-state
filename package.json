@@ -10,7 +10,7 @@
     "ukagaka"
   ],
   "scripts": {
-    "setup": "npm install -g http-server",
+    "server": "hs",
     "init": "npm run update && npm run mkdir && npm run build",
     "update": "npm update",
     "mkdir": "shx mkdir -p dist lib",
@@ -40,6 +40,7 @@
     "browserify": "^16.2.2",
     "empower": "^1.2.1",
     "espower-cli": "^1.1.0",
+    "http-server": "^0.11.1",
     "jquery": "^3.2.1",
     "narloader": "^2.0.2",
     "power-assert": "^1.4.1",
